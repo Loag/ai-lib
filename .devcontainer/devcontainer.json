@@ -1,0 +1,25 @@
+{
+    "name": "ai-lib-dev",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+      "ghcr.io/devcontainers/features/go": {}
+    },
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "go.lintFlags": [
+            "--enable-all",
+            "--new"
+          ],
+          "go.useLanguageServer": true
+        },
+        "extensions": [
+          "golang.go",
+          "enkia.tokyo-night",
+          "ms-azuretools.vscode-docker",
+          "PKief.material-icon-theme"
+        ]
+      }
+    },
+      "remoteUser": "root"
+  }
