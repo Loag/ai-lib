@@ -1,42 +1,32 @@
 # ai-lib
-go client for various chat ai apis
+
+a single interface lib for interacting with various chat ai apis.
 
 ## Usage
 
-### OpenAI
+```go
 
-the openai client returns a `OpenAICompletionResponse` object that contains all of the meta data and the choices.
+conf := client.AIConfig{
+    ApiKey:       apiKey,
+    Model:        "claude-3-5-sonnet-20240620",
+    SystemPrompt: "You are a helpful assistant.",
+    Temperature:  0.7,
+    TopP:         1.0,
+    MaxTokens:    2480,
+}
 
-``` go
-baseurl := "https://api.openai.com/v1/chat/completions"
-apiKey := os.Getenv("OPENAI_KEY")
-openai := client.NewOpenAI(baseurl, apiKey)
-
-openai.SetSystemPrompt("You are a helpful assistant.")
-
-res, err := openai.GetCompletion("Hello, how are you?")
+ai, err := client.NewAI(conf)
 if err != nil {
-    log.Err(err).Msg("Error sending message")
+    log.Err(err).Msg("Error creating AI")
     return
 }
 
-fmt.Println(res.Choices[0].Message.Content)
-```
-
-### Anthropic
-``` go
-apiKey := os.Getenv("ANTHROPIC_KEY")
-baseURL := "https://api.anthropic.com/v1/messages"
-
-anthropic := client.NewAnthropic(apiKey, baseURL)
-
-anthropic.SetSystemPrompt("You are a helpful assistant.")
-
-res, err := anthropic.GetCompletion("Hello, how are you?")
+res, err := ai.GetCompletion("Hello, how are you?")
 if err != nil {
-    log.Err(err).Msg("Error sending message")
+    log.Err(err).Msg("Error getting completion")
     return
 }
 
-fmt.Println(res.Content[0].Text)
+fmt.Println(res)
+
 ```

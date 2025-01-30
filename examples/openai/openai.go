@@ -9,11 +9,21 @@ import (
 )
 
 func main() {
-	baseurl := "https://api.openai.com/v1/chat/completions"
 	apiKey := os.Getenv("OPENAI_KEY")
-	openai := client.NewOpenAI(baseurl, apiKey)
 
-	openai.SetSystemPrompt("You are a helpful assistant.")
+	conf := client.AIConfig{
+		ApiKey:       apiKey,
+		Model:        "gpt-4o",
+		SystemPrompt: "You are a helpful assistant.",
+		Temperature:  0.7,
+		TopP:         1.0,
+	}
+
+	openai, err := client.NewAI(conf)
+	if err != nil {
+		log.Err(err).Msg("Error creating AI")
+		return
+	}
 
 	res, err := openai.GetCompletion("Hello, how are you?")
 	if err != nil {
@@ -21,5 +31,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(res.Choices[0].Message.Content)
+	fmt.Println(res)
 }

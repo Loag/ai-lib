@@ -10,11 +10,21 @@ import (
 
 func main() {
 	apiKey := os.Getenv("ANTHROPIC_KEY")
-	baseURL := "https://api.anthropic.com/v1/messages"
 
-	anthropic := client.NewAnthropic(apiKey, baseURL)
+	conf := client.AIConfig{
+		ApiKey:       apiKey,
+		Model:        "claude-3-5-sonnet-20240620",
+		SystemPrompt: "You are a helpful assistant.",
+		Temperature:  0.7,
+		TopP:         1.0,
+		MaxTokens:    2480,
+	}
 
-	anthropic.SetSystemPrompt("You are a helpful assistant.")
+	anthropic, err := client.NewAI(conf)
+	if err != nil {
+		log.Err(err).Msg("Error creating AI")
+		return
+	}
 
 	res, err := anthropic.GetCompletion("Hello, how are you?")
 	if err != nil {
@@ -22,5 +32,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(res.Content[0].Text)
+	fmt.Println(res)
 }

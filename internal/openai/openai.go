@@ -1,4 +1,4 @@
-package client
+package openai
 
 import (
 	"bytes"
@@ -23,8 +23,8 @@ type ResponseFormat struct {
 type OpenAICompletionRequest struct {
 	Model       string   `json:"model"`
 	Messages    []Prompt `json:"messages"`
-	Temperature float64  `json:"temperature"`
-	Top_P       float64  `json:"top_p"`
+	Temperature float32  `json:"temperature"`
+	Top_P       float32  `json:"top_p"`
 }
 
 type OpenAICompletionResponse struct {
@@ -61,11 +61,11 @@ type OpenAI struct {
 	apiKey       string
 	SystemPrompt string
 	Model        string
-	Temperature  float64
-	TopP         float64
+	Temperature  float32
+	TopP         float32
 }
 
-func NewOpenAI(baseURL, apiKey string) *OpenAI {
+func NewOpenAI(apiKey, baseURL string) *OpenAI {
 	return &OpenAI{
 		baseURL:     baseURL,
 		apiKey:      apiKey,
@@ -75,7 +75,7 @@ func NewOpenAI(baseURL, apiKey string) *OpenAI {
 	}
 }
 
-func NewOpenAIWithSystemPrompt(baseURL, apiKey, systemPrompt string) *OpenAI {
+func NewOpenAIWithSystemPrompt(apiKey, baseURL, systemPrompt string) *OpenAI {
 	return &OpenAI{
 		baseURL:      baseURL,
 		apiKey:       apiKey,
@@ -102,7 +102,7 @@ func (o *OpenAI) SetModel(model string) error {
 	return nil
 }
 
-func (o *OpenAI) SetTemperature(temperature float64) error {
+func (o *OpenAI) SetTemperature(temperature float32) error {
 	if temperature < 0 || temperature > 2 {
 		return errors.New("temperature must be between 0 and 2")
 	}
@@ -110,7 +110,7 @@ func (o *OpenAI) SetTemperature(temperature float64) error {
 	return nil
 }
 
-func (o *OpenAI) SetTopP(topP float64) error {
+func (o *OpenAI) SetTopP(topP float32) error {
 	if topP < 0 || topP > 1 {
 		return errors.New("topP must be between 0 and 1")
 	}
@@ -118,7 +118,7 @@ func (o *OpenAI) SetTopP(topP float64) error {
 	return nil
 }
 
-func (o *OpenAI) GetCompletion(prompt string) (OpenAICompletionResponse, error) {
+func (o *OpenAI) getCompletion(prompt string) (OpenAICompletionResponse, error) {
 
 	prompts := []Prompt{
 		{
@@ -175,4 +175,12 @@ func (o *OpenAI) GetCompletion(prompt string) (OpenAICompletionResponse, error) 
 	}
 
 	return response, nil
+}
+
+func (o *OpenAI) GetCompletion(prompt string) (string, error) {
+	response, err := o.getCompletion(prompt)
+	if err != nil {
+		return "", err
+	}
+	return response.Choices[0].Message.Content, nil
 }

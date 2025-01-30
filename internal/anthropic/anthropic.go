@@ -1,4 +1,4 @@
-package client
+package anthropic
 
 import (
 	"bytes"
@@ -80,6 +80,14 @@ func (a *Anthropic) SetTemperature(temperature float32) error {
 	return nil
 }
 
+func (a *Anthropic) SetTopP(topP float32) error {
+	if topP < 0 || topP > 1 {
+		return errors.New("topP must be between 0 and 1")
+	}
+	a.TopP = topP
+	return nil
+}
+
 func (a *Anthropic) SetMaxTokens(maxTokens int) error {
 	if maxTokens < 1 {
 		return errors.New("max tokens must be more than 1")
@@ -96,7 +104,7 @@ func (a *Anthropic) SetSystemPrompt(system string) error {
 	return nil
 }
 
-func (a *Anthropic) GetCompletion(prompt string) (AnthropicCompletionResponse, error) {
+func (a *Anthropic) getCompletion(prompt string) (AnthropicCompletionResponse, error) {
 	request := AnthropicCompletionRequest{
 		Model:       a.Model,
 		Temperature: a.Temperature,
@@ -148,4 +156,12 @@ func (a *Anthropic) GetCompletion(prompt string) (AnthropicCompletionResponse, e
 	}
 
 	return response, nil
+}
+
+func (a *Anthropic) GetCompletion(prompt string) (string, error) {
+	response, err := a.getCompletion(prompt)
+	if err != nil {
+		return "", err
+	}
+	return response.Content[0].Text, nil
 }
