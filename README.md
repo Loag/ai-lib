@@ -2,6 +2,15 @@
 
 a single interface lib for interacting with ai completion apis.
 
+The purpose of this lib is to get up and running fast with ai completion apis for go 
+It only includes exactly what is necessary to get text responses.
+
+## Supported Providers
+
+- [Anthropic (Claude)](https://docs.anthropic.com/en/docs/api)
+- [OpenAI (ChatGPT)](https://platform.openai.com/docs/api-reference)
+- [Google (Gemini)](https://ai.google.dev/gemini-api/docs)
+
 ## Usage
 
 ```go
