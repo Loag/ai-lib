@@ -6,6 +6,7 @@ import (
 
 	"github.com/loag/ai-lib/internal"
 	"github.com/loag/ai-lib/internal/anthropic"
+	"github.com/loag/ai-lib/internal/gemini"
 	"github.com/loag/ai-lib/internal/openai"
 )
 
@@ -55,6 +56,13 @@ func NewAI(config AIConfig) (*AI, error) {
 		claude.SetMaxTokens(config.MaxTokens)
 
 		ai = claude
+	} else if strings.Contains(config.Model, "gemini") {
+		gemini := gemini.NewGemini(config.ApiKey, "https://generativelanguage.googleapis.com/v1beta/models")
+		gemini.SetModel(config.Model)
+		gemini.SetSystemPrompt(config.SystemPrompt)
+
+		ai = gemini
+
 	} else {
 
 		if config.Temperature < 0 || config.Temperature > 2 {

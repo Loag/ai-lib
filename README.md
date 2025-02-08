@@ -1,6 +1,6 @@
 # ai-lib
 
-a single interface lib for interacting with various chat ai apis.
+a single interface lib for interacting with ai completion apis.
 
 ## Usage
 
